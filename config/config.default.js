@@ -19,6 +19,37 @@ module.exports = appInfo => {
     // myAppName: 'egg',
   };
 
+  // cross origin config
+  config.security = {
+    csrf: {
+      enable: false
+    },
+    domainWhiteList: ["*"]
+  };
+  config.cors = {
+    origin: "*",
+    allowMethods: "GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS"
+  };
+  config.mysql = {
+    // database configuration
+    client: {
+      // host
+      host: "localhost",
+      // port
+      port: "3306",
+      // username
+      user: "root",
+      // password
+      password: "111",
+      // database
+      database: "blogcms"
+    },
+    // load into app, default is open
+    app: true,
+    // load into agent, default is close
+    agent: false
+  };
+
   return {
     ...config,
     ...userConfig
