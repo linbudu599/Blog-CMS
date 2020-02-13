@@ -9,6 +9,7 @@ class MainController extends Controller {
   }
 
   async isLoginedIn() {
+    // crybto
     let { username, password } = this.ctx.request.body;
     console.log(username, password);
     const sql =
@@ -32,9 +33,41 @@ class MainController extends Controller {
       this.ctx.body = {
         code: 1,
         message: "failure"
-        // FIXME: use a safer way
       };
     }
+  }
+
+  //后台文章分类信息
+  async getTypeInfo() {
+    const res = await this.app.mysql.select("type");
+    this.ctx.body = { data: res };
+  }
+
+  async createArticle() {
+    let tmpArticle = this.ctx.request.body;
+    console.log(tmpArticle);
+    const result = await this.app.mysql.insert("article", tmpArticle);
+    console.log(result);
+    const { affectedRows, insertId } = result;
+
+    const insertSuccess = affectedRows === 1;
+
+    this.ctx.body = {
+      isScuccess: insertSuccess,
+      insertId: insertId
+    };
+  }
+
+  async updateArticle() {
+    let tmpArticle = this.ctx.request.body;
+    const result = await this.app.mysql.update("article", tmpArticle);
+    const { affectedRows } = result;
+
+    const updateSuccess = affectedRows === 1;
+
+    this.ctx.body = {
+      isScuccess: updateSuccess
+    };
   }
 }
 
