@@ -61,6 +61,7 @@ class MainController extends Controller {
   async updateArticle() {
     let tmpArticle = this.ctx.request.body;
     const result = await this.app.mysql.update("article", tmpArticle);
+    console.log(result);
     const { affectedRows } = result;
 
     const updateSuccess = affectedRows === 1;
@@ -68,6 +69,46 @@ class MainController extends Controller {
     this.ctx.body = {
       isScuccess: updateSuccess
     };
+  }
+
+  async getArticleList() {
+    let sql =
+      "SELECT article.id as id," +
+      "article.title as title," +
+      "article.intro as introduce," +
+      "article.view_count as view_count," +
+      "FROM_UNIXTIME(article.addTime,'%Y-%m-%d' ) as addTime," +
+      "type.typeName as typeName " +
+      "FROM article LEFT JOIN type ON article.type_id = type.Id " +
+      "ORDER BY article.id DESC ";
+
+    const resList = await this.app.mysql.query(sql);
+    this.ctx.body = { list: resList };
+  }
+
+  async delArticle() {
+    let id = this.ctx.params.id;
+    const res = await this.app.mysql.delete("article", { id: id });
+    this.ctx.body = { data: res };
+  }
+
+  async getArticleById() {
+    let id = this.ctx.params.id;
+
+    let sql =
+      "SELECT article.id as id," +
+      "article.title as title," +
+      "article.intro as introduce," +
+      "article.article_content as article_content," +
+      "FROM_UNIXTIME(article.addTime,'%Y-%m-%d' ) as addTime," +
+      "article.view_count as view_count ," +
+      "type.typeName as typeName ," +
+      "type.id as typeId " +
+      "FROM article LEFT JOIN type ON article.type_id = type.Id " +
+      "WHERE article.id=" +
+      id;
+    const result = await this.app.mysql.query(sql);
+    this.ctx.body = { data: result };
   }
 }
 
