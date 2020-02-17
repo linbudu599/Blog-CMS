@@ -51,6 +51,24 @@ module.exports = appInfo => {
     agent: false
   };
 
+  config.sequelize = {
+    dialect: "mysql",
+    host: "127.0.0.1",
+    port: 3306,
+    username: "root",
+    password: "111",
+    timezone: "+08:00",
+    database: "blogcms",
+    dateStrings: true,
+    typeCast(field, next) {
+      // for reading from database
+      if (field.type === "DATETIME") {
+        return field.string();
+      }
+      return next();
+    }
+  };
+
   return {
     ...config,
     ...userConfig
